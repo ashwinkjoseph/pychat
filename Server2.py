@@ -3,7 +3,7 @@ import threading
 import MySQLdb as mdb   
 import json
 
-db_conn = mdb.connect("localhost", "root", "", "sail_sample")
+db_conn = mdb.connect("localhost", "root", "", "sail_sample2")
 with db_conn:
     class database:
       
@@ -107,10 +107,10 @@ with db_conn:
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = '' ;
-    port = 8000;
+    port = 8010;
     s.bind((host, port));
     s.listen(10);
-    print("Server1 is running");
+    print("Server2 is running");
     conn = [];
     addr = [];
     connn = [];
