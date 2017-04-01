@@ -10,7 +10,7 @@ print("client is running");
 ret = []
 while True:
     typ = input("id or name?")
-    message = input("Enter the message");
+    message = input("Enter the entity to seaarch for: ");
     if(typ=="id"):
         smessage = {"intention":"search", "type":typ, "id":message}
     else:
@@ -60,7 +60,7 @@ print(recieved)
 if(recieved == "done"):
     message = {"intention":"delete", "data":list()}
     for c in ch:
-        message['data'].append(ret[c]['id']);
+        message['data'].append(ret[c]);
     
     message = json.dumps(message);
     s.send(message.encode());

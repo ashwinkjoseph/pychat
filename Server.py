@@ -3,10 +3,14 @@ import threading
 import MySQLdb as mdb   
 import json
 
-db_conn = mdb.connect("localhost", "root", "", "sail_sample")
+f = open("server_config.json", 'r');
+obj = f.read();
+f.close();
+obj = json.loads(obj)
+
+db_conn = mdb.connect(host=obj['db_server'], user=obj['user'], passwd=obj['password'], db=obj['database'])
 with db_conn:
     class database:
-      
         def __init__(self):
             self.cur = db_conn.cursor(mdb.cursors.DictCursor);
             self.stat = False;
@@ -47,6 +51,17 @@ with db_conn:
             else:
                 return False
 
+        def logit(self, data):
+            f = open("log.json", "w+");
+            data = json.dumps(data)
+            if(f.write(data)):
+                stat = True
+            else:
+                stat = False
+            f.write("\n")
+            f.close()
+            return stat
+
     def connection(conn, addr):
         print(str(addr)+"is now connected");
         req = database();
@@ -76,16 +91,28 @@ with db_conn:
                 else:
                     conn.send("error".encode());
             elif(r['intention']=="add"):
+                stat = int()
                 for data in r['data']:
                    print(data)
-                   req.send(int(data['id']), data['name']);
-                conn.send("done".encode())
+                   stat = req.send(int(data['id']), data['name']);
+                if(stat==True):
+                    conn.send("done".encode())
+                else:
+                    conn.send("error".encode())
                 break;
             elif(r['intention']=="delete"):
+                stat = int()
                 for data in r['data']:
                     print(data)
-                    req.remv(int(data))
-                conn.send("done".encode())
+                    if(req.logit(data)):
+                        stat = req.remv(int(data['id']))
+                    else:
+                        print("Logging Failed");
+                        stat = False
+                if(stat==True):
+                    conn.send("done".encode())
+                else:
+                    conn.send("error".encode())
                 break;
             else:
                 conn.send("Program Error".encode());

@@ -76,16 +76,24 @@ with db_conn:
                 else:
                     conn.send("error".encode());
             elif(r['intention']=="add"):
+                stat = int()
                 for data in r['data']:
                    print(data)
-                   req.send(int(data['id']), data['name']);
-                conn.send("done".encode())
+                   stat = req.send(int(data['id']), data['name']);
+                if(stat==True):
+                   conn.send("done".encode())
+                else:
+                   conn.send("error".encode())
                 break;
             elif(r['intention']=="delete"):
+                stat = int()
                 for data in r['data']:
                     print(data)
-                    req.remv(int(data))
-                conn.send("done".encode())
+                    stat = req.remv(int(data))
+                if(stat==True):
+                    conn.send("done".encode())
+                else:
+                    conn.send("error".encode())
                 break;
             else:
                 conn.send("Program Error".encode());
